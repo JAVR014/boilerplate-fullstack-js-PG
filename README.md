@@ -15,8 +15,8 @@ Para comenzar a trabajar con esta plantilla, sigue estos pasos:
 2.  **Clonar el repositorio**
 
     ```bash
-    git clone <URL-del-repositorio>
-    cd <nombre-del-repositorio>
+    git clone https://github.com/arnaldoperez/boilerplate-fullstack-js
+    cd boilerplate-fullstack-js
     ```
 
 3.  **Instalar dependencias**
