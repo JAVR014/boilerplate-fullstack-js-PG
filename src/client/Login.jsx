@@ -1,59 +1,29 @@
-import { useState } from 'react'
+import { useState } from 'react';
+import axios from 'axios';
 
-export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState(null)
-  const [user, setUser] = useState(null)
+export default function Login({ setToken }) {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-  async function handleSubmit(e) {
-    e.preventDefault()
-    setLoading(true)
-    setError(null)
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Login failed')
-      // store token
-      if (data.token) localStorage.setItem('token', data.token)
-      setUser(data.user)
+      const res = await axios.post('http://localhost:3001/api/login', { email, password });
+      setToken(res.data.token); // Guardar token en estado o localStorage
+      alert("Bienvenido!");
     } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
+      alert("Credenciales incorrectas");
     }
-  }
-
-  if (user) {
-    return (
-      <div>
-        <h2>Welcome</h2>
-        <p>{user.email}</p>
-        <button onClick={() => { localStorage.removeItem('token'); setUser(null); }}>Logout</button>
-      </div>
-    )
-  }
+  };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: 420 }}>
-      <h2>Login</h2>
-      <div>
-        <label>Email</label>
-        <input value={email} onChange={(e) => setEmail(e.target.value)} type="email" required />
-      </div>
-      <div>
-        <label>Password</label>
-        <input value={password} onChange={(e) => setPassword(e.target.value)} type="password" required />
-      </div>
-      <div>
-        <button type="submit" disabled={loading}>{loading ? 'Logging...' : 'Login'}</button>
-      </div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-    </form>
-  )
+    <div className="login-container">
+      <h2>Acceso Administrativo</h2>
+      <form onSubmit={handleLogin}>
+        <input type="email" placeholder="Email" onChange={e => setEmail(e.target.value)} />
+        <input type="password" placeholder="Contraseña" onChange={e => setPassword(e.target.value)} />
+        <button type="submit">Ingresar</button>
+      </form>
+    </div>
+  );
 }
